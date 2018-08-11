@@ -5,14 +5,14 @@ description: |
   Run simple HTTP server for static files on working directory.
 
 grade: stable # must be 'stable' to release into candidate/stable channels
-confinement: devmode # use 'strict' once you have the right plugs and slots
+confinement: classic # use 'strict' once you have the right plugs and slots
 
 parts:
   servedir:
     # See 'snapcraft plugins'
     plugin: go
     source: .
-    go-importpath: github.com/jempe/serveDir
+    go-importpath: github.com/jempe/servedir
 apps:
   servedir:
-    command: serveDir
+    command: servedir
