@@ -12,15 +12,25 @@ func main() {
 	if len(os.Args) > 1 {
 		port := os.Args[1]
 
+		configFolder := os.Getenv("HOME") + "/.servedir"
+
+		serverCertFile := configFolder + "/server.crt"
+		serverKeyFile := configFolder + "/server.key"
+
 		directory, err := os.Getwd()
 		if err == nil {
-			http.Handle("/", corsHeader(http.FileServer(http.Dir(directory))))
+			mux := http.NewServeMux()
+			mux.Handle("/", corsHeader(http.FileServer(http.Dir(directory))))
 
 			localIP := getLocalIP()
 
-			log.Println("Starting web server at http://" + localIP + ":" + port)
-
-			panic(http.ListenAndServe(":"+port, nil))
+			if !fileExists(serverCertFile) || !fileExists(serverKeyFile) {
+				log.Println("Starting web server at http://" + localIP + ":" + port)
+				panic(http.ListenAndServe(":"+port, mux))
+			} else {
+				log.Println("Starting web server at https://" + localIP + ":" + port)
+				panic(http.ListenAndServeTLS(":"+port, serverCertFile, serverKeyFile, mux))
+			}
 		} else {
 			log.Println("couldn't get current working directory", err)
 		}
@@ -57,4 +67,11 @@ func getLocalIP() string {
 		}
 	}
 	return "127.0.0.1"
+}
+
+func fileExists(file string) bool {
+	if _, err := os.Stat(file); err == nil {
+		return true
+	}
+	return false
 }
