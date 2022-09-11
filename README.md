@@ -8,12 +8,12 @@ Sometimes we need and easy way to share files between different computers and di
 If you have a Go development environment you can type the following command in your command line:
 
 ```sh
-go get github.com/jempe/serveDir
+go install github.com/jempe/servedir@latest
 ```
 ## Usage
 Open the terminal and change the directory to the directory that you want to share, then type:
 ```sh
-serveDir 3000
+servedir 3000
 ```
 Change **3000** with the port number that you want to use
 
